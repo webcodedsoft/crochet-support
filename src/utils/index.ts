@@ -1,4 +1,4 @@
-import { ConfigWidgetParams, errorPriorityTypes } from '../types';
+import { ConfigWidgetParams, DrawTools, errorPriorityTypes } from '../types';
 
 export const manageSilentMode = (
   silentMode: boolean,
@@ -6,13 +6,13 @@ export const manageSilentMode = (
   errorPriority: errorPriorityTypes
 ) => {
   if (!silentMode && errorPriority === 'High') {
-    throw new Error(`(Crochet SDK): ${message}`);
-  }
-  if (!silentMode && errorPriority === 'Medium') {
     console.error(`(Crochet SDK): ${message}`);
   }
-  if (!silentMode && errorPriority === 'Low') {
+  if (!silentMode && errorPriority === 'Medium') {
     console.warn(`(Crochet SDK): ${message}`);
+  }
+  if (!silentMode && errorPriority === 'Low') {
+    console.log(`(Crochet SDK): ${message}`);
   }
 };
 
@@ -29,7 +29,7 @@ export const validateConfigKeys = (
         'unknown param "' + paramName + '" Please read the documentation',
         errorPriority
       );
-      console.warn(
+      console.error(
         '(Crochet SDK) unknown param "' +
           paramName +
           '" Please read the documentation'
@@ -80,12 +80,12 @@ export const validateConfigValues = (config: ConfigWidgetParams) => {
   }
 };
 
-export const colorOptions = [
-  '#ff0000',
-  '#00ff00',
-  '#0000ff',
-  '#ffff00',
-  '#ff00ff',
-  '#00ffff',
-  '#000000',
-];
+export const determineCursorType = (tool: string) => {
+  if (tool === DrawTools.Hand) {
+    return 'pointer';
+  } else if (tool === DrawTools.Text) {
+    return 'text';
+  } else {
+    return 'crosshair';
+  }
+};

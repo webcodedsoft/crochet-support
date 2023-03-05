@@ -10,8 +10,15 @@ type Props = {
 };
 
 export default function CanvaRenderModal({ image, closeFeedback }: Props) {
-  const [selectedTool, setSelectedTool] = useState<string>(DrawTools.Rectangle);
+  const [selectedTool, setSelectedTool] = useState<string>(DrawTools.Hand);
   const [selectedColor, setSelectedColor] = useState<string>('#000000');
+
+  // window.addEventListener('error', (args) => {
+  //   console.log(
+  //     '🚀 ~ file: CanvaRenderModal.tsx:17 ~ CanvaRenderModal ~ args:',
+  //     args
+  //   );
+  // });
 
   return (
     <div>

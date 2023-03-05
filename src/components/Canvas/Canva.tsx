@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './canvas.css';
 import { DrawTools } from '../../types';
+import { determineCursorType } from '../../utils';
+
+//TODO: Text Selection and drag
 
 type Props = {
   imageSrc: string;
@@ -21,20 +24,66 @@ export default function Canvas({
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [fillColor] = useState<boolean>(false);
+  const [isWriting, setIsWriting] = useState<boolean>(false);
+  const [toolSelected, setToolSelected] = useState('');
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (selectedTool === DrawTools.Clear) {
+      setToolSelected(DrawTools.Hand);
+    } else {
+      setToolSelected(selectedTool);
+    }
+  }, [selectedTool]);
+
+  useEffect(() => {
+    if (selectedTool === DrawTools.Text || isWriting) {
+      const textArea = textAreaRef.current;
+      textArea?.focus();
+    }
+  }, [isWriting, selectedTool]);
 
   const setCanvasBackground = useCallback(() => {
     // setting whole canvas background to white, so the downloaded img background will be white
     if (canvas) {
       canvas.width = canvas.offsetWidth;
       canvas.height = 700;
-      // canvas.width = 1944;
-      // canvas.height = 1329;
-      if (ctx) {
-        ctx.fillStyle = '#6b7280';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
     }
-  }, [canvas, ctx]);
+  }, [canvas]);
+
+  const clearCanvas = () => {
+    if (ctx && canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // clearing whole canvas
+      // setCanvasBackground();
+      const img = new Image();
+      img.onload = () => {
+        // canva.width = img.width;
+        // canva.height = img.height;
+        ctx.drawImage(img, 0, 0, canvas.offsetWidth, 700);
+      };
+      img.src = imageSrc;
+      return;
+    }
+  };
+
+  const saveImage = () => {
+    if (canvas) {
+      const link = document.createElement('a'); // creating <a> element
+      link.download = `${Date.now()}.jpg`; // passing current date as link download value
+      link.href = canvas.toDataURL(); // passing canvasData as link href value
+      link.click(); // clicking lin
+    }
+  };
+
+  useEffect(() => {
+    if (selectedTool === DrawTools.Clear) {
+      clearCanvas();
+      setToolSelected(DrawTools.Hand);
+    } else if (selectedTool === DrawTools.Download) {
+      saveImage();
+      return;
+    }
+  }, [selectedTool]);
 
   useEffect(() => {
     const canva = canvasRef.current;
@@ -57,7 +106,7 @@ export default function Canvas({
 
   const startDraw = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (ctx) {
-      setIsDrawing(true);
+      selectedTool == DrawTools.Text ? setIsWriting(true) : setIsDrawing(true);
       setPrevMouseX(e.nativeEvent.offsetX); // passing current mouseX position as prevMouseX value
       setPrevMouseY(e.nativeEvent.offsetY); // passing current mouseY position as prevMouseY value
       ctx.beginPath(); // creating new path to draw
@@ -143,22 +192,6 @@ export default function Canvas({
     }
   };
 
-  const clearCanvas = () => {
-    if (ctx && canvas) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // clearing whole canvas
-      setCanvasBackground();
-    }
-  };
-
-  // const saveImage = () => {
-  //   if (canvas) {
-  //     const link = document.createElement('a'); // creating <a> element
-  //     link.download = `${Date.now()}.jpg`; // passing current date as link download value
-  //     link.href = canvas.toDataURL(); // passing canvasData as link href value
-  //     link.click(); // clicking lin
-  //   }
-  // };
-
   const drawing = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (!isDrawing) return; // if isDrawing is false return from here
     if (ctx && snapshot) {
@@ -176,24 +209,70 @@ export default function Canvas({
         drawArrow(e);
       } else if (selectedTool === DrawTools.Eraser) {
         eraserDraw(e);
-      } else if (selectedTool === DrawTools.Clear) {
-        clearCanvas();
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDrawing(false);
+    // setToolSelected(DrawTools.Hand);
+  };
+
+  const drawText = (text: string) => {
+    if (ctx) {
+      ctx.textBaseline = 'top';
+      ctx.font = '24px sans-serif';
+      ctx.fillText(text, prevMouseX, prevMouseY);
+    }
+  };
+
+  const handleBlur: React.KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
+    if (e.keyCode === 13) {
+      if (selectedTool === DrawTools.Text && isWriting) {
+        const textArea = e.target as HTMLTextAreaElement;
+        const currentValue = textArea.value;
+        drawText(currentValue);
+        setIsWriting(false);
+        setToolSelected(DrawTools.Hand);
       }
     }
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        display: 'flex',
-        // width: '100%',
-        // height: '100%',
-        overflow: 'hidden',
-      }}
-      onMouseMove={drawing}
-      onMouseDown={startDraw}
-      onMouseUp={() => setIsDrawing(false)}
-    />
+    <div>
+      {isWriting && (
+        <textarea
+          ref={textAreaRef}
+          onKeyDown={handleBlur}
+          style={{
+            position: 'fixed',
+            top: prevMouseY - 2,
+            left: prevMouseX,
+            font: '24px sans-serif',
+            margin: 0,
+            padding: 0,
+            border: 0,
+            outline: 0,
+            resize: 'both',
+            overflow: 'hidden',
+            whiteSpace: 'pre',
+            background: 'transparent',
+          }}
+        />
+      )}
+      <canvas
+        ref={canvasRef}
+        style={{
+          display: 'flex',
+          // width: '100%',
+          // height: '100%',
+          overflow: 'hidden',
+          cursor: determineCursorType(toolSelected || selectedTool),
+        }}
+        onMouseMove={drawing}
+        onMouseDown={startDraw}
+        onMouseUp={handleMouseUp}
+      />
+    </div>
   );
 }

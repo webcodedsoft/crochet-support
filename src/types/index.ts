@@ -72,7 +72,7 @@ export type Position = {
 };
 
 export const DrawTools = {
-  Selection: 'Selection',
+  Hand: 'Hand',
   Line: 'Line',
   Rectangle: 'Rectangle',
   Pencil: 'Pencil',
@@ -82,4 +82,5 @@ export const DrawTools = {
   Circle: 'Circle',
   Arrow: 'Arrow',
   Clear: 'Clear',
+  Download: 'Download',
 };

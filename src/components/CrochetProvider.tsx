@@ -16,6 +16,7 @@ import Button from './Button';
 // import WidgetModal from './WidgetModal';
 import html2canvas from 'html2canvas';
 import CanvaRenderModal from './CanvaRenderModal';
+import { browserName, parseUserAgent } from '../utils/broswer';
 
 type WidgetParams = {
   children: ReactElement;
@@ -54,7 +55,10 @@ export default function CrochetProvider({
     }
   };
 
-  console.log('🚀 ~ file: CrochetProvider.tsx:24 ~ config:', config);
+  console.log(
+    '🚀 ~ file: CrochetProvider.tsx:24 ~ config:',
+    navigator.userAgent
+  );
   if (!publicKey) {
     if (config) {
       manageSilentMode(
@@ -108,6 +112,68 @@ export default function CrochetProvider({
     handleScreenshotClick();
   };
 
+  window.onerror = (
+    event: Event | string,
+    source: string | undefined,
+    lineno: number | undefined,
+    colno: number | undefined,
+    error: Error | undefined
+  ) => {
+    console.log(
+      `Event: ${event}, Source: ${source}, LineNo: ${lineno}, ColNo: ${colno}, Error: ${JSON.stringify(
+        error
+      )}`
+    );
+  };
+
+  window.addEventListener('error', (ev: ErrorEvent) => {
+    console.log('window.addEventListener', JSON.stringify(ev), 'ev', ev);
+  });
+
+  window.addEventListener('load', (ev: Event) => {
+    // const browser = detect();
+    const browserN = browserName(navigator.userAgent);
+    console.log(
+      '🚀 ~ file: CrochetProvider.tsx:133 ~ window.addEventListener ~ browserN:',
+      browserN
+    );
+    const parseUserAge = parseUserAgent(navigator.userAgent);
+    console.log(
+      '🚀 ~ file: CrochetProvider.tsx:133 ~ window.addEventListener ~ browserName:',
+      parseUserAge
+    );
+    // if (browser) {
+    //   console.log(
+    //     '🚀 ~ file: CrochetProvider.tsx:133 ~ window.addEventListener ~ browser:',
+    //     browser
+    //   );
+    //   console.log(browser.name);
+    //   console.log(browser.version);
+    //   console.log(browser.os);
+    // }
+    // console.log('navigator.userAgent', navigator.userAgent);
+    // console.log('window.history', window.history);
+
+    console.log(
+      '🚀 ~ file: CrochetProvider.tsx:131 ~ window.addEventListener ~ ev:',
+      ev
+    );
+  });
+
+  window.addEventListener('loadeddata', (ev: Event) => {
+    console.log(
+      '🚀 ~ file: CrochetProvider.tsx:131 ~ window.addEventListener ~ ev:',
+      ev
+    );
+  });
+
+  window.addEventListener('loadedmetadata', (ev: Event) => {
+    console.log(
+      '🚀 ~ file: CrochetProvider.tsx:131 ~ window.addEventListener ~ ev:',
+      ev
+    );
+  });
+
   const childrenWithButton = Children.map(children, (child, index) => {
     const childProps = child.props as ChildProps;
 
@@ -131,12 +197,6 @@ export default function CrochetProvider({
               </React.Fragment>
             ),
           })}
-          {/* {showWidgetForm && (
-              <WidgetModal
-                showWidgetModal={showWidgetForm}
-                toggleFormWidget={toggleFormWidget}
-              />
-            )} */}
           {showDrawingWidget && (
             <CanvaRenderModal
               image={caputuredScreen}
