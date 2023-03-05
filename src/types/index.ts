@@ -46,3 +46,40 @@ export type ConfigWidgetParams = {
   silentMode: boolean;
   errorPriority: errorPriorityTypes;
 };
+
+export type DrawElementTypes = 'Line' | 'Rectangle' | 'Pencil' | 'Text';
+export type DrawToolEnum =
+  | 'Selection'
+  | 'Line'
+  | 'Rectangle'
+  | 'Pencil'
+  | 'Text'
+  | 'Brush'
+  | 'Eraser'
+  | 'Circle';
+
+export type DrawActionEnum =
+  | 'None'
+  | 'Writing'
+  | 'Drawing'
+  | 'Moving'
+  | 'Resizing';
+
+export type Position = {
+  prevMouseX: number;
+  prevMouseY: number;
+  snapshot: any;
+};
+
+export const DrawTools = {
+  Selection: 'Selection',
+  Line: 'Line',
+  Rectangle: 'Rectangle',
+  Pencil: 'Pencil',
+  Text: 'Text',
+  Brush: 'Brush',
+  Eraser: 'Eraser',
+  Circle: 'Circle',
+  Arrow: 'Arrow',
+  Clear: 'Clear',
+};

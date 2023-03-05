@@ -79,3 +79,13 @@ export const validateConfigValues = (config: ConfigWidgetParams) => {
     );
   }
 };
+
+export const colorOptions = [
+  '#ff0000',
+  '#00ff00',
+  '#0000ff',
+  '#ffff00',
+  '#ff00ff',
+  '#00ffff',
+  '#000000',
+];

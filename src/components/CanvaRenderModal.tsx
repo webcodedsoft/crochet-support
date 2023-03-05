@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { DrawTools } from '../types';
 import Form from './Form';
 import Toolbar from './Toolbar';
+import Canvas from './Canvas/Canva';
 
 type Props = {
   image: string;
@@ -8,6 +10,9 @@ type Props = {
 };
 
 export default function CanvaRenderModal({ image, closeFeedback }: Props) {
+  const [selectedTool, setSelectedTool] = useState<string>(DrawTools.Rectangle);
+  const [selectedColor, setSelectedColor] = useState<string>('#000000');
+
   return (
     <div>
       <div className="fixed z-50 inset-0 overflow-y-auto p-6">
@@ -27,9 +32,20 @@ export default function CanvaRenderModal({ image, closeFeedback }: Props) {
               //   height: 'calc((100% - 5%) + 2%)',
             }}
           >
-            <Toolbar closeFeedback={closeFeedback} />
+            <Toolbar
+              closeFeedback={closeFeedback}
+              onToolSelect={(val) => setSelectedTool(val)}
+              onColorSelect={(val) => setSelectedColor(val)}
+            />
             <div className="p-6">
-              <img className="h-screens w-screens" src={image} />
+              <Canvas
+                imageSrc={image}
+                selectedTool={selectedTool}
+                selectedColor={selectedColor}
+              />
+              {/* <Canvas imageSrc={image} /> */}
+              {/* <Canvas imageSrc={image} /> */}
+              {/* <img className="h-screens w-screens" src={image} /> */}
             </div>
           </div>
         </div>
