@@ -43,6 +43,7 @@ export default function useCrochet(
   window.supportConfig = {
     publicKey,
     project: configs.project,
+    env: configs.env,
   };
 
   const __properties: Array<any> = [];

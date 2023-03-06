@@ -4,6 +4,7 @@ import { DrawTools } from '../../types';
 import { determineCursorType } from '../../utils';
 
 //TODO: Text Selection and drag
+//TODO: Referactor this into hooks
 
 type Props = {
   imageSrc: string;

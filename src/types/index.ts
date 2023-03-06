@@ -1,6 +1,9 @@
+import { ReactElement } from 'react';
+
 export interface ConfigProps {
   publicKey: string;
   project: string;
+  env: string;
 }
 
 export type SupportReporter = {
@@ -39,15 +42,15 @@ export type WidgetSdk = {
 };
 
 export type errorPriorityTypes = 'High' | 'Medium' | 'Low';
+export type captureModeTypes = 'fullscreen' | 'advanced';
 
 export type ConfigWidgetParams = {
   showWidget: boolean;
-  captureMode: 'fullscreen' | 'advanced';
+  captureMode: captureModeTypes;
   silentMode: boolean;
   errorPriority: errorPriorityTypes;
 };
 
-export type DrawElementTypes = 'Line' | 'Rectangle' | 'Pencil' | 'Text';
 export type DrawToolEnum =
   | 'Selection'
   | 'Line'
@@ -83,4 +86,24 @@ export const DrawTools = {
   Arrow: 'Arrow',
   Clear: 'Clear',
   Download: 'Download',
+};
+
+export interface ErrorEventData {
+  isTrusted: boolean;
+  colno: number;
+  lineno: number;
+  timeStamp: number;
+  type: string;
+  message: string;
+  filename: string;
+  error: Error | null;
+  clientInfo: Navigator | null;
+}
+
+export type WidgetParams = {
+  children: ReactElement;
+  publicKey: string;
+  project: string;
+  env: string;
+  config?: ConfigWidgetParams;
 };

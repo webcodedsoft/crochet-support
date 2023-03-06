@@ -1,4 +1,9 @@
-import { ConfigWidgetParams, DrawTools, errorPriorityTypes } from '../types';
+import {
+  ConfigWidgetParams,
+  DrawTools,
+  errorPriorityTypes,
+  WidgetParams,
+} from '../types';
 
 export const manageSilentMode = (
   silentMode: boolean,
@@ -28,11 +33,6 @@ export const validateConfigKeys = (
         silentMode,
         'unknown param "' + paramName + '" Please read the documentation',
         errorPriority
-      );
-      console.error(
-        '(Crochet SDK) unknown param "' +
-          paramName +
-          '" Please read the documentation'
       );
     }
   });
@@ -88,4 +88,20 @@ export const determineCursorType = (tool: string) => {
   } else {
     return 'crosshair';
   }
+};
+
+export const shouldShowWidget = ({
+  publicKey,
+  project,
+  env,
+  config,
+}: Partial<WidgetParams>): boolean => {
+  if (publicKey && project && env) {
+    if (config?.showWidget) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  return false;
 };

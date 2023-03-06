@@ -6,23 +6,17 @@ import React, {
   Profiler,
 } from 'react';
 import { user } from '../testing-data/user';
-import { ConfigWidgetParams } from '../types';
+import { WidgetParams } from '../types';
 import {
   manageSilentMode,
+  shouldShowWidget,
   validateConfigKeys,
   validateConfigValues,
 } from '../utils';
 import Button from './Button';
-// import WidgetModal from './WidgetModal';
 import html2canvas from 'html2canvas';
 import CanvaRenderModal from './CanvaRenderModal';
-import { browserName, parseUserAgent } from '../utils/broswer';
-
-type WidgetParams = {
-  children: ReactElement;
-  publicKey: string;
-  config?: ConfigWidgetParams;
-};
+// import { useMetaData } from '../hooks/metadata';
 
 type ChildProps = {
   text: string;
@@ -33,8 +27,16 @@ let numberofMount = 0;
 export default function CrochetProvider({
   children,
   publicKey,
+  project,
+  env,
   config,
 }: WidgetParams): ReactElement {
+  console.log('🚀 ~ file: CrochetProvider.tsx:41 ~ config:', config);
+  // const { getWebsiteError, getReporterBrowserMeta } = useMetaData();
+
+  //TODO: Convert this to hooks
+
+  //Forbid multiple initialization
   const onRender = (id: any, phase: any) => {
     if (id === 'crochet' && phase === 'mount') {
       numberofMount = numberofMount + 1;
@@ -43,7 +45,7 @@ export default function CrochetProvider({
       if (config) {
         manageSilentMode(
           config.silentMode,
-          'widget can only be loaded once. we strongly recommend you to wrap this widget only in your root file',
+          'widget can only be loaded once. its strongly recommend you to wrap this widget only in your root file',
           config.errorPriority
         );
       }
@@ -55,10 +57,7 @@ export default function CrochetProvider({
     }
   };
 
-  console.log(
-    '🚀 ~ file: CrochetProvider.tsx:24 ~ config:',
-    navigator.userAgent
-  );
+  //Check if publicKey is missing
   if (!publicKey) {
     if (config) {
       manageSilentMode(
@@ -68,6 +67,30 @@ export default function CrochetProvider({
       );
     }
     manageSilentMode(true, 'publicKey must be a provided', 'High');
+  }
+
+  //Check if project is missing
+  if (!project) {
+    if (config) {
+      manageSilentMode(
+        config.silentMode,
+        'project name must be a provided',
+        config.errorPriority
+      );
+    }
+    manageSilentMode(true, 'project name must be a provided', 'High');
+  }
+
+  //Check if env is missing
+  if (!env) {
+    if (config) {
+      manageSilentMode(
+        config.silentMode,
+        'environment must be a provided',
+        config.errorPriority
+      );
+    }
+    manageSilentMode(true, 'environment must be a provided', 'High');
   }
 
   if (typeof publicKey !== 'string') {
@@ -82,7 +105,12 @@ export default function CrochetProvider({
   }
 
   if (config) {
-    const knownConfig = ['show', 'captureMode', 'silentMode'];
+    const knownConfig = [
+      'showWidget',
+      'captureMode',
+      'silentMode',
+      'errorPriority',
+    ];
     validateConfigKeys(
       config,
       knownConfig,
@@ -112,88 +140,32 @@ export default function CrochetProvider({
     handleScreenshotClick();
   };
 
-  window.onerror = (
-    event: Event | string,
-    source: string | undefined,
-    lineno: number | undefined,
-    colno: number | undefined,
-    error: Error | undefined
-  ) => {
-    console.log(
-      `Event: ${event}, Source: ${source}, LineNo: ${lineno}, ColNo: ${colno}, Error: ${JSON.stringify(
-        error
-      )}`
-    );
-  };
-
-  window.addEventListener('error', (ev: ErrorEvent) => {
-    console.log('window.addEventListener', JSON.stringify(ev), 'ev', ev);
-  });
-
-  window.addEventListener('load', (ev: Event) => {
-    // const browser = detect();
-    const browserN = browserName(navigator.userAgent);
-    console.log(
-      '🚀 ~ file: CrochetProvider.tsx:133 ~ window.addEventListener ~ browserN:',
-      browserN
-    );
-    const parseUserAge = parseUserAgent(navigator.userAgent);
-    console.log(
-      '🚀 ~ file: CrochetProvider.tsx:133 ~ window.addEventListener ~ browserName:',
-      parseUserAge
-    );
-    // if (browser) {
-    //   console.log(
-    //     '🚀 ~ file: CrochetProvider.tsx:133 ~ window.addEventListener ~ browser:',
-    //     browser
-    //   );
-    //   console.log(browser.name);
-    //   console.log(browser.version);
-    //   console.log(browser.os);
-    // }
-    // console.log('navigator.userAgent', navigator.userAgent);
-    // console.log('window.history', window.history);
-
-    console.log(
-      '🚀 ~ file: CrochetProvider.tsx:131 ~ window.addEventListener ~ ev:',
-      ev
-    );
-  });
-
-  window.addEventListener('loadeddata', (ev: Event) => {
-    console.log(
-      '🚀 ~ file: CrochetProvider.tsx:131 ~ window.addEventListener ~ ev:',
-      ev
-    );
-  });
-
-  window.addEventListener('loadedmetadata', (ev: Event) => {
-    console.log(
-      '🚀 ~ file: CrochetProvider.tsx:131 ~ window.addEventListener ~ ev:',
-      ev
-    );
-  });
-
   const childrenWithButton = Children.map(children, (child, index) => {
     const childProps = child.props as ChildProps;
 
     return (
-      <Profiler id="crochet" onRender={onRender}>
+      <Profiler id="crochet_profiler_id" onRender={onRender}>
         <React.Fragment key={index}>
           {cloneElement(child, {
             children: (
               <React.Fragment>
                 <div id="crochet-screen">{childProps.children}</div>
-                {config?.showWidget && !showDrawingWidget && (
-                  <div className="container">
-                    <Button
-                      style={user.buttonSettings}
-                      onClick={feedBackButtonControl}
-                    >
-                      <div>Report Bug</div>
-                    </Button>
-                  </div>
-                )}
+                {shouldShowWidget({
+                  publicKey,
+                  project,
+                  env,
+                  config,
+                }) &&
+                  !showDrawingWidget && (
+                    <div className="container">
+                      <Button
+                        style={user.buttonSettings}
+                        onClick={feedBackButtonControl}
+                      >
+                        <div>Report Bug</div>
+                      </Button>
+                    </div>
+                  )}
               </React.Fragment>
             ),
           })}
@@ -210,7 +182,11 @@ export default function CrochetProvider({
 
   return <div>{childrenWithButton}</div>;
 }
+/*
+Configuration 
 
+Environment
+*/
 /* Events 
 
 OnForm Sent

@@ -13,13 +13,6 @@ export default function CanvaRenderModal({ image, closeFeedback }: Props) {
   const [selectedTool, setSelectedTool] = useState<string>(DrawTools.Hand);
   const [selectedColor, setSelectedColor] = useState<string>('#000000');
 
-  // window.addEventListener('error', (args) => {
-  //   console.log(
-  //     '🚀 ~ file: CanvaRenderModal.tsx:17 ~ CanvaRenderModal ~ args:',
-  //     args
-  //   );
-  // });
-
   return (
     <div>
       <div className="fixed z-50 inset-0 overflow-y-auto p-6">
@@ -31,7 +24,7 @@ export default function CanvaRenderModal({ image, closeFeedback }: Props) {
 
           {/* Modal */}
           <div
-            className="bg-gray-500 h-screen rounded-lg overflow-hidden shadow-xl transform transition-all mx-auto lg:w-1/3 xl:w-1/4 p-4s lg:px-6s xl:px-8s py-6s lg:py-8s xl:py-10s w-screen lg:w-70"
+            className="bg-gray-500 h-screens rounded-lg overflow-hidden shadow-xl transform transition-all mx-auto lg:w-1/3 xl:w-1/4 p-4s lg:px-6s xl:px-8s py-6s lg:py-8s xl:py-10s w-screen lg:w-70"
             style={{
               marginRight: 'calc((100% - 70%) + 2%)',
               width: 'calc((100% - 35%) + 2%)',
@@ -50,9 +43,6 @@ export default function CanvaRenderModal({ image, closeFeedback }: Props) {
                 selectedTool={selectedTool}
                 selectedColor={selectedColor}
               />
-              {/* <Canvas imageSrc={image} /> */}
-              {/* <Canvas imageSrc={image} /> */}
-              {/* <img className="h-screens w-screens" src={image} /> */}
             </div>
           </div>
         </div>
