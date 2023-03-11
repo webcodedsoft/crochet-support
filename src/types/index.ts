@@ -12,43 +12,13 @@ export type SupportReporter = {
   metaData?: any;
 };
 
-type SupportEventType =
-  | 'load'
-  | 'loaderror'
-  | 'beforeunload'
-  | 'show'
-  | 'hide'
-  | 'capture'
-  | 'feedbackbeforesend'
-  | 'feedbacksent'
-  | 'feedbackerror'
-  | 'feedbackdiscarded';
-
-export type SupportWidgetSdk = {
-  show: () => void;
-  hide: () => void;
-  unload: () => void;
-
-  //   isVisible: () => boolean
-  //   capture: (mode: 'fullscreen' | 'advanced') => Promise<void>
-  //   cancelCapture: () => void
-  //   isExtensionInstalled: () => Promise<boolean>
-  //   setReporter: (reporter: SupportReporter) => void
-  on: (eventName: SupportEventType, listener: () => void) => void;
-};
-
-export type WidgetSdk = {
-  initWidget: (params: ConfigProps | ConfigProps) => Promise<SupportWidgetSdk>;
-};
-
 export type errorPriorityTypes = 'High' | 'Medium' | 'Low';
-export type captureModeTypes = 'fullscreen' | 'advanced';
 
 export type ConfigWidgetParams = {
   showWidget: boolean;
-  captureMode: captureModeTypes;
   silentMode: boolean;
   errorPriority: errorPriorityTypes;
+  recipient: string;
 };
 
 export type DrawToolEnum =
@@ -102,8 +72,5 @@ export interface ErrorEventData {
 
 export type WidgetParams = {
   children: ReactElement;
-  publicKey: string;
-  project: string;
-  env: string;
   config?: ConfigWidgetParams;
 };

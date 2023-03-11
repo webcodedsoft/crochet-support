@@ -26,12 +26,8 @@ type ChildProps = {
 let numberofMount = 0;
 export default function CrochetProvider({
   children,
-  publicKey,
-  project,
-  env,
   config,
 }: WidgetParams): ReactElement {
-  console.log('🚀 ~ file: CrochetProvider.tsx:41 ~ config:', config);
   // const { getWebsiteError, getReporterBrowserMeta } = useMetaData();
 
   //TODO: Convert this to hooks
@@ -57,59 +53,12 @@ export default function CrochetProvider({
     }
   };
 
-  //Check if publicKey is missing
-  if (!publicKey) {
-    if (config) {
-      manageSilentMode(
-        config.silentMode,
-        'publicKey must be a provided',
-        config.errorPriority
-      );
-    }
-    manageSilentMode(true, 'publicKey must be a provided', 'High');
-  }
-
-  //Check if project is missing
-  if (!project) {
-    if (config) {
-      manageSilentMode(
-        config.silentMode,
-        'project name must be a provided',
-        config.errorPriority
-      );
-    }
-    manageSilentMode(true, 'project name must be a provided', 'High');
-  }
-
-  //Check if env is missing
-  if (!env) {
-    if (config) {
-      manageSilentMode(
-        config.silentMode,
-        'environment must be a provided',
-        config.errorPriority
-      );
-    }
-    manageSilentMode(true, 'environment must be a provided', 'High');
-  }
-
-  if (typeof publicKey !== 'string') {
-    if (config) {
-      manageSilentMode(
-        config.silentMode,
-        'publicKey must be a string',
-        config.errorPriority
-      );
-    }
-    manageSilentMode(true, 'publicKey must be a string', 'High');
-  }
-
   if (config) {
     const knownConfig = [
       'showWidget',
-      'captureMode',
       'silentMode',
       'errorPriority',
+      'recipient',
     ];
     validateConfigKeys(
       config,
@@ -151,9 +100,6 @@ export default function CrochetProvider({
               <React.Fragment>
                 <div id="crochet-screen">{childProps.children}</div>
                 {shouldShowWidget({
-                  publicKey,
-                  project,
-                  env,
                   config,
                 }) &&
                   !showDrawingWidget && (

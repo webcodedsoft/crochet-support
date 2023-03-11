@@ -54,18 +54,6 @@ export const validateConfigValues = (config: ConfigWidgetParams) => {
     );
   }
   if (
-    'captureMode' in config &&
-    typeof config?.captureMode !== 'string' &&
-    config?.captureMode !== 'fullscreen' &&
-    config?.captureMode !== 'advanced'
-  ) {
-    manageSilentMode(
-      config.silentMode,
-      'captureMode must be fullscreen or advanced',
-      config?.errorPriority
-    );
-  }
-  if (
     'errorPriority' in config &&
     typeof config?.errorPriority !== 'string' &&
     config?.errorPriority !== 'High' &&
@@ -75,6 +63,13 @@ export const validateConfigValues = (config: ConfigWidgetParams) => {
     manageSilentMode(
       config.silentMode,
       'errorPriority can only be High | Medium | Low',
+      config?.errorPriority
+    );
+  }
+  if ('recipient' in config && typeof config?.recipient !== 'string') {
+    manageSilentMode(
+      config.recipient,
+      'recipient must be a string',
       config?.errorPriority
     );
   }
@@ -91,17 +86,11 @@ export const determineCursorType = (tool: string) => {
 };
 
 export const shouldShowWidget = ({
-  publicKey,
-  project,
-  env,
   config,
 }: Partial<WidgetParams>): boolean => {
-  if (publicKey && project && env) {
-    if (config?.showWidget) {
-      return true;
-    } else {
-      return false;
-    }
+  if (config?.showWidget) {
+    return true;
+  } else {
+    return false;
   }
-  return false;
 };
