@@ -28,8 +28,6 @@ export default function CanvaRenderModal({ image, closeFeedback }: Props) {
             style={{
               marginRight: 'calc((100% - 70%) + 2%)',
               width: 'calc((100% - 35%) + 2%)',
-              //   paddingBottom: 500,
-              //   height: 'calc((100% - 5%) + 2%)',
             }}
           >
             <Toolbar

@@ -73,4 +73,6 @@ export interface ErrorEventData {
 export type WidgetParams = {
   children: ReactElement;
   config?: ConfigWidgetParams;
+  buttonStyle?: React.CSSProperties;
+  buttonText?: string;
 };

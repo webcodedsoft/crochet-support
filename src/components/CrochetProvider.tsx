@@ -5,7 +5,7 @@ import React, {
   useState,
   Profiler,
 } from 'react';
-import { user } from '../testing-data/user';
+// import { user } from '../testing-data/user';
 import { WidgetParams } from '../types';
 import {
   manageSilentMode,
@@ -27,6 +27,8 @@ let numberofMount = 0;
 export default function CrochetProvider({
   children,
   config,
+  buttonStyle,
+  buttonText,
 }: WidgetParams): ReactElement {
   // const { getWebsiteError, getReporterBrowserMeta } = useMetaData();
 
@@ -91,7 +93,6 @@ export default function CrochetProvider({
 
   const childrenWithButton = Children.map(children, (child, index) => {
     const childProps = child.props as ChildProps;
-
     return (
       <Profiler id="crochet_profiler_id" onRender={onRender}>
         <React.Fragment key={index}>
@@ -105,10 +106,11 @@ export default function CrochetProvider({
                   !showDrawingWidget && (
                     <div className="container">
                       <Button
-                        style={user.buttonSettings}
+                        style={buttonStyle}
+                        // style={user.buttonSettings}
                         onClick={feedBackButtonControl}
                       >
-                        <div>Report Bug</div>
+                        <div>{buttonText || 'Report Bug'}</div>
                       </Button>
                     </div>
                   )}
@@ -128,16 +130,3 @@ export default function CrochetProvider({
 
   return <div>{childrenWithButton}</div>;
 }
-/*
-Configuration 
-
-Environment
-*/
-/* Events 
-
-OnForm Sent
-OnForm Show
-OnCapture
-OnFeedbackSent
-OnWidgetClose
-*/
