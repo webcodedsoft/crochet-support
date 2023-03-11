@@ -17,6 +17,7 @@ import Button from './Button';
 import html2canvas from 'html2canvas';
 import CanvaRenderModal from './CanvaRenderModal';
 // import { useMetaData } from '../hooks/metadata';
+// import { exportNetworkLog } from '../hooks';
 
 type ChildProps = {
   text: string;
@@ -31,8 +32,7 @@ export default function CrochetProvider({
   env,
   config,
 }: WidgetParams): ReactElement {
-  console.log('🚀 ~ file: CrochetProvider.tsx:41 ~ config:', config);
-  // const { getWebsiteError, getReporterBrowserMeta } = useMetaData();
+  // const { getBrowerActivities, getBrowserViewPort } = useMetaData();
 
   //TODO: Convert this to hooks
 
@@ -139,6 +139,18 @@ export default function CrochetProvider({
     e.preventDefault();
     handleScreenshotClick();
   };
+
+  // useEffect(() => {
+  //   const logEntries = performance.getEntriesByType('resource');
+  //   const viewport = getBrowserViewPort();
+  //   const data = exportNetworkLog().saveNetworkLog(logEntries);
+
+  //   const fetg = async () => {
+  //     const data = await getBrowerActivities();
+  //     console.log('🚀 ~ file: CrochetProvider.tsx:160 ~ fetg ~ data:', data);
+  //   };
+  //   fetg();
+  // }, [getBrowerActivities, getBrowserViewPort]);
 
   const childrenWithButton = Children.map(children, (child, index) => {
     const childProps = child.props as ChildProps;

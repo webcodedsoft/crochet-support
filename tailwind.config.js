@@ -1,6 +1,11 @@
 module.exports = {
   mode: 'jit',
-  purge: ['./dist/*.html', './src/**/*.{js,jsx,ts,tsx}', './stories/*', './index.html'],
+  purge: [
+    './dist/*.html',
+    './src/**/*.{js,jsx,ts,tsx}',
+    './stories/*',
+    './index.html',
+  ],
   darkMode: false,
   theme: {
     extend: {},

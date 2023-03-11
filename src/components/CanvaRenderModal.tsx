@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DrawTools } from '../types';
 import Form from './Form';
-import Toolbar from './Toolbar';
+import Toolbar from './Canvas/Toolbar';
 import Canvas from './Canvas/Canva';
 
 type Props = {
