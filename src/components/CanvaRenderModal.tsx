@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import { DrawTools } from '../types';
+import { DrawTools, FormValueTypes } from '../types';
 import Form from './Form';
-import Toolbar from './Toolbar';
+import Toolbar from './Canvas/Toolbar';
 import Canvas from './Canvas/Canva';
 
 type Props = {
   image: string;
   closeFeedback: () => void;
+  getCanvasDrawing: (args: string) => void;
+  getFormData: (data: FormValueTypes) => void;
 };
 
-export default function CanvaRenderModal({ image, closeFeedback }: Props) {
+export default function CanvaRenderModal({
+  image,
+  closeFeedback,
+  getCanvasDrawing,
+  getFormData,
+}: Props) {
   const [selectedTool, setSelectedTool] = useState<string>(DrawTools.Hand);
-  const [selectedColor, setSelectedColor] = useState<string>('#000000');
+  const [selectedColor, setSelectedColor] = useState<string>('#ff0000');
 
   return (
     <div>
@@ -22,14 +29,11 @@ export default function CanvaRenderModal({ image, closeFeedback }: Props) {
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
 
-          {/* Modal */}
           <div
             className="bg-gray-500 h-screens rounded-lg overflow-hidden shadow-xl transform transition-all mx-auto lg:w-1/3 xl:w-1/4 p-4s lg:px-6s xl:px-8s py-6s lg:py-8s xl:py-10s w-screen lg:w-70"
             style={{
               marginRight: 'calc((100% - 70%) + 2%)',
               width: 'calc((100% - 35%) + 2%)',
-              //   paddingBottom: 500,
-              //   height: 'calc((100% - 5%) + 2%)',
             }}
           >
             <Toolbar
@@ -42,11 +46,12 @@ export default function CanvaRenderModal({ image, closeFeedback }: Props) {
                 imageSrc={image}
                 selectedTool={selectedTool}
                 selectedColor={selectedColor}
+                getCanvasDrawing={getCanvasDrawing}
               />
             </div>
           </div>
         </div>
-        <Form />
+        <Form getFormData={getFormData} />
         <div className="flex-1"></div>
       </div>
     </div>

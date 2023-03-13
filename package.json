@@ -4,8 +4,7 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=10"
@@ -35,7 +34,13 @@
     "trailingComma": "es5"
   },
   "name": "crochet-support",
-  "author": "Adedeji Sikiru A",
+  "author": "Sikiru Adedeji A",
+  "description": "This react package allow your user capture bugs as it happening and send it to your tech team in other to give tech team more insight into the user bug report",
+  "keywords": ["support", "help-center", "react", "screenshot", "drawing", "bug"],
+  "repository": {
+     "type": "git",
+     "url": "git+https://github.com/webcodedsoft/crochet-support.git"
+  },
   "module": "dist/crochet-support.esm.js",
   "size-limit": [
     {

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .container {
-    position: relative;
+    position: fixed;
 }
 
 .overlay {

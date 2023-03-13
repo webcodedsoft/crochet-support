@@ -5,8 +5,8 @@ import React, {
   useState,
   Profiler,
 } from 'react';
-import { user } from '../testing-data/user';
-import { WidgetParams } from '../types';
+// import { user } from '../testing-data/user';
+import { FormValueTypes, WidgetParams } from '../types';
 import {
   manageSilentMode,
   shouldShowWidget,
@@ -16,19 +16,30 @@ import {
 import Button from './Button';
 import html2canvas from 'html2canvas';
 import CanvaRenderModal from './CanvaRenderModal';
-// import { useMetaData } from '../hooks/metadata';
+import { useMetaData } from '../hooks/metadata';
+import useInteractionTracing from '../hooks/interaction';
 
 type ChildProps = {
   text: string;
   children: ReactElement;
 };
 
+const formValues: FormValueTypes = {
+  bugSummary: '',
+  bugDescription: '',
+  reportName: '',
+  reportEmail: '',
+};
+
 let numberofMount = 0;
-export default function CrochetProvider({
+export default function CrochetSupport({
   children,
   config,
+  buttonStyle,
+  buttonText,
 }: WidgetParams): ReactElement {
-  // const { getWebsiteError, getReporterBrowserMeta } = useMetaData();
+  const { getReporterBrowserMeta, getBrowserViewPort } = useMetaData();
+  const interaction = useInteractionTracing();
 
   //TODO: Convert this to hooks
 
@@ -71,6 +82,7 @@ export default function CrochetProvider({
 
   const [caputuredScreen, setCapturedScreen] = useState<string>('');
   const [showDrawingWidget, setShowDrawingWidget] = useState<boolean>(false);
+  const [formValue, setFormValue] = useState<FormValueTypes>(formValues);
 
   const toggleDrawWidget = () =>
     setShowDrawingWidget((prevState) => !prevState);
@@ -89,9 +101,39 @@ export default function CrochetProvider({
     handleScreenshotClick();
   };
 
+  const getCanvasDrawing = (draw: string) => {
+    submitFeedBackButton(draw);
+  };
+
+  const getFormData = (data: FormValueTypes) => setFormValue(data);
+
+  const submitFeedBackButton = async (drawingData: string) => {
+    const brower = getReporterBrowserMeta();
+    const viewport = getBrowserViewPort();
+    // const errors = await getWebsiteError();
+
+    const payload = {
+      interaction,
+      brower,
+      viewport,
+      // errors,
+      screenshot: drawingData,
+      bugSummary: formValue.bugSummary,
+      bugDescription: formValue.bugDescription,
+      reporter: {
+        reportEmail: formValue.reportEmail,
+        reportName: formValue.reportName,
+      },
+    };
+    console.log(
+      '🚀 ~ file: CrochetSupport.tsx:106 ~ submitFeedBackButton ~ payload:',
+      payload,
+      config?.recipient
+    );
+  };
+
   const childrenWithButton = Children.map(children, (child, index) => {
     const childProps = child.props as ChildProps;
-
     return (
       <Profiler id="crochet_profiler_id" onRender={onRender}>
         <React.Fragment key={index}>
@@ -105,10 +147,11 @@ export default function CrochetProvider({
                   !showDrawingWidget && (
                     <div className="container">
                       <Button
-                        style={user.buttonSettings}
+                        style={buttonStyle}
+                        // style={user.buttonSettings}
                         onClick={feedBackButtonControl}
                       >
-                        <div>Report Bug</div>
+                        <div>{buttonText || 'Report Bug'}</div>
                       </Button>
                     </div>
                   )}
@@ -119,6 +162,8 @@ export default function CrochetProvider({
             <CanvaRenderModal
               image={caputuredScreen}
               closeFeedback={toggleDrawWidget}
+              getCanvasDrawing={getCanvasDrawing}
+              getFormData={getFormData}
             />
           )}
         </React.Fragment>
@@ -128,16 +173,3 @@ export default function CrochetProvider({
 
   return <div>{childrenWithButton}</div>;
 }
-/*
-Configuration 
-
-Environment
-*/
-/* Events 
-
-OnForm Sent
-OnForm Show
-OnCapture
-OnFeedbackSent
-OnWidgetClose
-*/
