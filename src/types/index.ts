@@ -76,3 +76,10 @@ export type WidgetParams = {
   buttonStyle?: React.CSSProperties;
   buttonText?: string;
 };
+
+export type FormValueTypes = {
+  bugSummary: string;
+  bugDescription: string;
+  reportName: string;
+  reportEmail: string;
+};

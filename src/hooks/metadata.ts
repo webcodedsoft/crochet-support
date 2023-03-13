@@ -9,13 +9,27 @@ export function useMetaData() {
     return null;
   };
 
-  const getWebsiteError = () => {
-    return handleErrorEvent();
+  const getWebsiteError = () => handleErrorEvent();
+
+  const getBrowerActivities = async () =>
+    performance.getEntriesByType('resource');
+
+  const getBrowserViewPort = () => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    return {
+      viewportWidth,
+      viewportHeight,
+    };
   };
+
+  window.addEventListener('resize', getBrowserViewPort);
 
   return {
     getReporterBrowserMeta,
     getWebsiteError,
+    getBrowserViewPort,
+    getBrowerActivities,
   };
 }
 

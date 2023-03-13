@@ -3,6 +3,7 @@ import './canvas.css';
 import { DrawTools } from '../../types';
 import { determineCursorType } from '../../utils';
 import useCanvas from './useCanvas';
+import EVENT_NAME from '../../constants';
 
 //TODO: Text Selection and drag
 
@@ -10,11 +11,13 @@ type Props = {
   imageSrc: string;
   selectedTool: string;
   selectedColor: string;
+  getCanvasDrawing: (args: string) => void;
 };
 export default function Canvas({
   imageSrc,
   selectedTool,
   selectedColor,
+  getCanvasDrawing,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
@@ -55,6 +58,29 @@ export default function Canvas({
       textArea?.focus();
     }
   }, [isWriting, selectedTool]);
+
+  const exportDrawing = useCallback(() => {
+    if (canvas) {
+      getCanvasDrawing(canvas.toDataURL());
+    }
+  }, [canvas, getCanvasDrawing]);
+
+  useEffect(() => {
+    const buttonElement = document.getElementById(
+      EVENT_NAME.CROCHET_BUTTON_EVENT
+    );
+    buttonElement?.addEventListener(
+      EVENT_NAME.GET_CANVAS_DRAWING,
+      exportDrawing
+    );
+
+    return () => {
+      buttonElement?.removeEventListener(
+        EVENT_NAME.GET_CANVAS_DRAWING,
+        exportDrawing
+      );
+    };
+  }, [exportDrawing]);
 
   const setCanvasBackground = useCallback(() => {
     // setting whole canvas background to white, so the downloaded img background will be white
